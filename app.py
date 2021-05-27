@@ -99,7 +99,7 @@ def update():
         oldDescription = event.vobject_instance.vevent.description.value
         newDescription = """{0} 
 
-https://www.paccenter.org/api/calupdate?uid={1}
+https://www.paccenter.org/calupdate?uid={1}
 
 {2}
 """.format(name,uid,oldDescription)
