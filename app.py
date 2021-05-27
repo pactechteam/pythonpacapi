@@ -110,3 +110,44 @@ https://www.paccenter.org/api/calupdate?uid={1}
         print("complete")        
                                         
     return 'complete'
+
+
+
+@app.route('/upgrade',methods=["POST"])
+def upgrade():
+    params = request.json
+    if SECRET_KEY == params["key"]:
+        now = datetime.now()
+        global tempTest
+       # tempTest  = params["name"]
+        name = params["name"]
+        uid = params["uid"]
+        caldav_url = 'https://cal.bonner.hopto.org/'
+        username = os.getenv("caluser")
+        password = os.getenv("calpass")
+
+        client = caldav.DAVClient(url=caldav_url, username=username, password=password)
+
+        my_principal = client.principal()
+
+
+        pacCalendar = client.calendar(url="https://cal.bonner.hopto.org/user1/eccc554d-2a25-6b9e-ee95-59d96066cea4/")
+
+        event = pacCalendar.event_by_uid(uid)
+        print(event.vobject_instance.vevent.description.value)      
+        print(event.vobject_instance.vevent.uid.value)   
+
+        oldDescription = event.vobject_instance.vevent.description.value
+        newDescription = """{0} 
+
+https://www.paccenter.org/calupdate?uid={1}
+
+{2}
+""".format(name,uid,oldDescription)
+
+       # this will update description
+        event.vobject_instance.vevent.description.value = newDescription
+        event.save()
+        print("complete")        
+                                        
+    return 'complete'
