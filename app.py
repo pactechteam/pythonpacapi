@@ -9,7 +9,6 @@ SECRET_KEY = os.getenv("pythonapi")
 
 app = Flask(__name__)
 
-from datetime import datetime
 import sys
 
 ## stuff from caldav example
