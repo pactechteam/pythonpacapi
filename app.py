@@ -1,7 +1,10 @@
+from json.encoder import JSONEncoder
 from flask import Flask
 from flask import request
 from dotenv import load_dotenv
 from datetime import datetime
+import json
+
 load_dotenv()
 import os
 SECRET_KEY = os.getenv("pythonapi")
@@ -143,3 +146,67 @@ https://www.paccenter.org/calupdate?uid={0}
     
                                         
     return 'complete'
+
+
+    
+@app.route('/getFacts',methods=["POST"])
+def getFacts():
+    params = request.json
+    if SECRET_KEY == params["key"]:
+        uid = params["uid"]
+        caldav_url = 'https://cal.bonner.hopto.org/'
+        username = os.getenv("caluser")
+        password = os.getenv("calpass")
+
+        client = caldav.DAVClient(url=caldav_url, username=username, password=password)
+
+
+        pacCalendar = client.calendar(url="https://cal.bonner.hopto.org/user1/eccc554d-2a25-6b9e-ee95-59d96066cea4/")
+
+        event = pacCalendar.event_by_uid(uid)
+        print(event.vobject_instance.vevent.description.value)      
+        print(event.vobject_instance.vevent.uid.value)  
+
+        payload = {"data":event.data,"description":event.vobject_instance.vevent.description.value}
+
+    
+                                        
+    return payload
+
+
+    
+    
+@app.route('/getAll',methods=["POST"])
+def getAll():
+    params = request.json
+    if SECRET_KEY == params["key"]:
+        caldav_url = 'https://cal.bonner.hopto.org/'
+        username = os.getenv("caluser")
+        password = os.getenv("calpass")
+
+        client = caldav.DAVClient(url=caldav_url, username=username, password=password)
+
+
+        pacCalendar = client.calendar(url="https://cal.bonner.hopto.org/user1/eccc554d-2a25-6b9e-ee95-59d96066cea4/")
+        events = pacCalendar.events()
+
+        payload = []
+        for event in events:
+            title = event.vobject_instance.vevent.summary.value
+            start =  event.vobject_instance.vevent.dtstart.value
+            end =  event.vobject_instance.vevent.dtend.value
+            description =  event.vobject_instance.vevent.description.value
+            uid =  event.vobject_instance.vevent.uid.value
+
+            startStr = start.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+            endStr= end.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+
+            payload.append(({"title":title,"start":startStr,"end":endStr,"description":description,"uid":uid}))
+        
+        
+
+      
+
+    jsonStr = json.dumps(payload)
+                                        
+    return {"events":jsonStr}
