@@ -198,8 +198,8 @@ def getAll():
             description =  event.vobject_instance.vevent.description.value
             uid =  event.vobject_instance.vevent.uid.value
 
-            startStr = start.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-            endStr= end.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+            startStr = start.timestamp()
+            endStr= end.timestamp()
 
             payload.append(({"title":title,"start":startStr,"end":endStr,"description":description,"uid":uid}))
         
