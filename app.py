@@ -95,8 +95,7 @@ def update():
         pacCalendar = client.calendar(url="https://cal.bonner.hopto.org/user1/eccc554d-2a25-6b9e-ee95-59d96066cea4/")
 
         event = pacCalendar.event_by_uid(uid)
-        print(event.vobject_instance.vevent.description.value)      
-        print(event.vobject_instance.vevent.uid.value)   
+  
 
         oldDescription = event.vobject_instance.vevent.description.value
         newDescription = """{0} 
@@ -105,10 +104,9 @@ def update():
 
        # this will update description
         event.vobject_instance.vevent.description.value = newDescription
-        event.save()
-        print("complete")        
+        event.save()    
                                         
-    return 'complete'
+    return newDescription
 
 
 
@@ -164,8 +162,7 @@ def getFacts():
         pacCalendar = client.calendar(url="https://cal.bonner.hopto.org/user1/eccc554d-2a25-6b9e-ee95-59d96066cea4/")
 
         event = pacCalendar.event_by_uid(uid)
-        print(event.vobject_instance.vevent.description.value)      
-        print(event.vobject_instance.vevent.uid.value)  
+
 
         payload = {"data":event.data,"description":event.vobject_instance.vevent.description.value}
 
