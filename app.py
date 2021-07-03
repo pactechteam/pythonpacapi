@@ -108,6 +108,32 @@ def update():
                                         
     return newDescription
 
+@app.route('/descriptionUpdate',methods=["POST"])
+def descriptionUpdate():
+    params = request.json
+    if SECRET_KEY == params["key"]:
+        now = datetime.now()
+        global tempTest
+       # tempTest  = params["name"]
+        newDescription = params["newDescription"]
+        uid = params["uid"]
+        caldav_url = 'https://cal.bonner.hopto.org/'
+        username = os.getenv("caluser")
+        password = os.getenv("calpass")
+
+        client = caldav.DAVClient(url=caldav_url, username=username, password=password)
+
+        pacCalendar = client.calendar(url="https://cal.bonner.hopto.org/user1/eccc554d-2a25-6b9e-ee95-59d96066cea4/")
+
+        event = pacCalendar.event_by_uid(uid)
+  
+
+       # this will update description
+        event.vobject_instance.vevent.description.value = newDescription
+        event.save()    
+                                        
+    return newDescription
+
 
 
 @app.route('/upgrade',methods=["POST"])
